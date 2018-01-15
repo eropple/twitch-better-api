@@ -2,8 +2,9 @@
   "name": "@eropple/twitch-better-api",
   "version": "0.1.0",
   "main": "dist",
-  "repository": "git@github.com:eropple/twitch-helix-api",
+  "repository": "git@github.com:eropple/twitch-better-api",
   "author": "Ed Ropple <ed@edropple.com>",
+  "license": "AGPL-3.0-only",
   "dependencies": {
     "axios": "^0.17.1",
     "deep-freeze-es6": "^1.0.1",
@@ -14,7 +15,6 @@
     "qs": "^6.5.1",
     "set-manipulator": "^0.3.1"
   },
-  "license": "AGPL-3.0",
   "engines": {
     "node": ">= 8.0.0"
   },

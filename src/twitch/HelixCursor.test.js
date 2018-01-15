@@ -33,4 +33,4 @@ test('can issue a cursor command', async () => {
   const secondPageCount = data[0].viewer_count;
 
   expect(secondPageCount).toBeLessThan(firstPageCount);
-});
+}, 20000);

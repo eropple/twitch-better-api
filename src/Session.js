@@ -2,6 +2,9 @@ import * as _ from 'lodash';
 import Joi from 'joi';
 import deepFreeze from 'deep-freeze-es6';
 
+import { authedKraken } from './twitch/kraken';
+import { authedHelix } from './twitch/helix';
+
 import { CATEGORIES } from './operations';
 import { OPTIONS_VALIDATOR, DEFAULT_OPTIONS } from './options';
 
@@ -27,4 +30,7 @@ export default class Session {
   get logger() { return this._logger; }
   get options() { return this._options; }
   get categories() { return this._categories; }
+
+  get kraken() { return authedKraken(this.auth.accessToken); }
+  get helix() { return authedHelix(this.auth.accessToken); }
 }

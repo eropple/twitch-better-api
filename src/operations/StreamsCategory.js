@@ -4,6 +4,6 @@ export default class StreamsCategory extends OperationCategory {
   static categoryName = "streams";
 
   getStreamsCursor(params) {
-    return this.twitch.helix.getCursor("/streams", params);
+    return this.helix.getCursor("/streams", params);
   }
 }

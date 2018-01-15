@@ -1,7 +1,5 @@
 import * as _ from 'lodash';
 
-import { default as twitchApi } from '../twitch';
-
 export default class OperationCategory {
   constructor(session) {
     this._session = session;
@@ -11,7 +9,9 @@ export default class OperationCategory {
 
   get name() { return this.constructor.categoryName; }
   get logger() { return this._logger; }
-  get twitch() { return twitchApi(this._session.auth.accessToken); }
+
+  get kraken() { return this._session.kraken; }
+  get helix() { return this._session.helix; }
 
   async helixCall(method, endpoint, options) {
     const fullOptions = _.merge({}, { method, url: endpoint }, options);

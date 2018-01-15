@@ -1,7 +1,7 @@
 import * as _ from 'lodash';
 import EventEmitter2 from 'eventemitter2';
 
-import twitch from '../twitch';
+import { authedKraken } from '../twitch/kraken';
 
 export default class BaseAuth extends EventEmitter2 {
   constructor(logger) {
@@ -48,8 +48,8 @@ export default class BaseAuth extends EventEmitter2 {
 
   async validate() {
     try {
-      const api = twitch(this.accessToken);
-      const _resp = await api.kraken.get("/");
+      const kraken = authedKraken(this.accessToken);
+      const _resp = await kraken.get("/");
 
       const expiresIn = _resp.data.token.expires_in;
       this.logger.info(`OAuth token validated; expires in ${expiresIn}s.`);
