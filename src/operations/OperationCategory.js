@@ -14,30 +14,10 @@ export default class OperationCategory {
   get helix() { return this._session.helix; }
 
   async helixCall(method, endpoint, options) {
-    const fullOptions = _.merge({}, { method, url: endpoint }, options);
-
-    try {
-      this.logger.debug({ options: fullOptions });
-      const resp = await this.helix(_.merge({}, { method, url: endpoint }, options));
-      return resp.data;
-    } catch (err) {
-      const {response} = err;
-      this.logger.error({ response, options: fullOptions });
-      throw err;
-    }
+    return this._session.helixCall(method, endpoint, options);
   }
 
   async krakenCall(method, endpoint, options) {
-    const fullOptions = _.merge({}, { method, url: endpoint }, options);
-
-    try {
-      this.logger.debug({ options: fullOptions });
-      const resp = await this.kraken(_.merge({}, { method, url: endpoint }, options));
-      return resp.data;
-    } catch (err) {
-      const {response} = err;
-      this.logger.error({ response, options: fullOptions });
-      throw err;
-    }
+    return this._session.krakenCall(method, endpoint, options);
   }
 }

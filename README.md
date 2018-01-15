@@ -6,18 +6,17 @@ enough, and Helix is not only incomplete but `v5` is scheduled to be shut down
 at the end of 2018. So that's fun. And while the rest of the world has mostly
 moved on to providing OpenAPI/Swagger docs or at least generating clients _for_
 you like Twitch's own parent company does with the AWS/Seahorse stuff, Twitch is
-happy to make its end users make third-rate knockoff APIs.
+happy to make its end users make clients for their chaotic APIs.
 
 It's no real surprise, then, that Twitch API clients are in the state they're
 in. People have done their best, but the quality of the existing API clients is
-hit-or-miss and they're all an exercise in frustration. You can have
+hit-or-miss and they're all an exercise in frustration. You might be able to get
 completeness, for `v5` anyway, but even something as simple as "get game by ID"
 requires Helix and on top of that you get callback hell or singletons or any
 number of other pains in our collective ass.
 
-So, fine. Let's make a Twitch client that doesn't suck. Because, as much as it
-should be _their_ job, I guess it's not. So let's aim for at least a
-_second_-rate API.
+So, fine. Let's make a Twitch client that doesn't suck. I think this is a good
+start.
 
 ## Requirements ##
 `twitch-better-api` is designed for use with Node. I don't use older versions of
@@ -139,11 +138,13 @@ data set.
 If there's a call you need access to that isn't made available, we've got an
 option for that. Two properties exist, `Session.helix` and `Session.kraken`,
 which will yield to you properly authenticated clients for the Helix and the
-`v5` APIs respectively.
+`v5` APIs respectively. There are also helper methods, `Session.helixCall` and
+`Session.krakenCall`, that
 
-Before you do this in your own code, however, please consider writing a wrapper
-for the task you're trying to solve; somebody else will probably need it someday
-and it's a good way to contribute back.
+Before you do this in your own code, however, please consider writing an
+operation that presents a nice interface for the problem you're trying to solve;
+somebody else will probably need it someday and it's a good way to contribute
+back.
 
 Don't try to save and reuse `helix` or `kraken` objects outside of a given
 method. They have a copy of the OAuth access token and will not be valid if the
@@ -180,6 +181,11 @@ an issue and we can discuss it.
 
 ## Future Work ##
 - There are a lot of calls not directly wrapped.
+- Retry support is TBD. Backoff/repetition isn't that difficult but it does
+  probably mean unwrapping async/await into `Promise`s and my own applications
+  don't currently need it; my experience strongly leads me to think that most
+  errors are of the `4xx` class and the only one that it seems like the client
+  can really help with is `429 Too Many Requests`.
 - Not for this gem specifically, but a little OAuth app that can be run on a
   local machine to get an OAuth token with scopes would be handy instead of
   relying on TwitchApps's [TokenGen]().

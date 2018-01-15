@@ -33,4 +33,32 @@ export default class Session {
 
   get kraken() { return authedKraken(this.auth.accessToken); }
   get helix() { return authedHelix(this.auth.accessToken); }
+
+  async helixCall(method, endpoint, options) {
+    const fullOptions = _.merge({}, { method, url: endpoint }, options);
+
+    try {
+      this.logger.debug({ options: fullOptions });
+      const resp = await this.helix(_.merge({}, { method, url: endpoint }, options));
+      return resp.data;
+    } catch (err) {
+      const {response} = err;
+      this.logger.error({ response, options: fullOptions });
+      throw err;
+    }
+  }
+
+  async krakenCall(method, endpoint, options) {
+    const fullOptions = _.merge({}, { method, url: endpoint }, options);
+
+    try {
+      this.logger.debug({ options: fullOptions });
+      const resp = await this.kraken(_.merge({}, { method, url: endpoint }, options));
+      return resp.data;
+    } catch (err) {
+      const {response} = err;
+      this.logger.error({ response, options: fullOptions });
+      throw err;
+    }
+  }
 }
