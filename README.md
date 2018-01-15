@@ -1,18 +1,21 @@
 # `twitch-better-api` #
 Twitch is cool. Games are fun, streaming is fun.
 
-The Twitch API is a tire fire. They're onto "Helix" now, as if `v3` and `v5`
-weren't enough, and Helix is not only incomplete but `v5` is scheduled to be
-shut down at the end of 2018. So that's fun. And while the rest of the world has
-mostly moved on to providing OpenAPI/Swagger docs or at least generating clients
-_for_ you like Twitch's own parent company does with the AWS/Seahorse stuff,
-Twitch is happy to make its end users make third-rate knockoff APIs.
+The Twitch API is a mess. They're onto "Helix" now, as if `v3` and `v5` weren't
+enough, and Helix is not only incomplete but `v5` is scheduled to be shut down
+at the end of 2018. So that's fun. And while the rest of the world has mostly
+moved on to providing OpenAPI/Swagger docs or at least generating clients _for_
+you like Twitch's own parent company does with the AWS/Seahorse stuff, Twitch is
+happy to make its end users make third-rate knockoff APIs.
 
-It's no real surprise, then, that Twitch API clients are a mess. You can have
-completeness, for `v5` anyway, but then you get callback hell or singletons or
-any number of other pains in our collective ass.
+It's no real surprise, then, that Twitch API clients are in the state they're
+in. People have done their best, but the quality of the existing API clients is
+hit-or-miss and they're all an exercise in frustration. You can have
+completeness, for `v5` anyway, but even something as simple as "get game by ID"
+requires Helix and on top of that you get callback hell or singletons or any
+number of other pains in our collective ass.
 
-So, fine. Let's make a Twitch API that doesn't suck. Because, as much as it
+So, fine. Let's make a Twitch client that doesn't suck. Because, as much as it
 should be _their_ job, I guess it's not. So let's aim for at least a
 _second_-rate API.
 
@@ -44,9 +47,9 @@ yarn add @eropple/twitch-better-api
 `twitch-better-api` adheres to semver.
 
 ## Usage ##
-`twitch-better-api` tries not to be prescriptive about how you use it. Unlike
-a lot of existing API clients, it doesn't require you to deal with singletons
-and it tries to handle its own business as much as possible.
+`twitch-better-api` tries not to be prescriptive about how you use it. Unlike a
+lot of existing API clients, it doesn't require you to deal with singletons and
+it tries to handle its own business as much as possible.
 
 ### Options ###
 Options are verified with Joi; if something's received that `twitch-better-api`
@@ -58,9 +61,9 @@ that you've set that _isn't_ caught by Joi, please open an issue.
 
 ### Connect ###
 At its core, all of the `connect` methods in the API return an object that
-inherits from `BaseAuth`. You can extend this yourself (if, say, you want to
-get a Twitch API key from a remote data source and periodically refresh it),
-but the two main ways of using the API are as follows:
+inherits from `BaseAuth`. You can extend this yourself (if, say, you want to get
+a Twitch API key from a remote data source and periodically refresh it), but the
+two main ways of using the API are as follows:
 
 - `export async function connectAsApp(oauthClientId, oauthClientSecret, logger, userOptions)`
 - `export async function connectWithUserAccessToken(oauthToken, logger, userOptions)`
@@ -106,9 +109,9 @@ As a rule:
 
 ##### Cursors #####
 Twitch has three, count-'em-three, different implementations of cursors: two in
-Kraken and one in Helix. This may seem preposterous at first, second, third,
-and forty-ninth glance, I agree. It does not get less preposterous when you
-reach the two hundred and eighth.
+Kraken and one in Helix. This may seem preposterous at first, second, third, and
+forty-ninth glance, I agree. It does not get less preposterous when you reach
+the two hundred and eighth.
 
 But I digress.
 
@@ -153,8 +156,9 @@ returns a `Promise`.
 ## Testing ##
 `twitch-better-api` is somewhat tested; the hot paths are tested because I used
 the tests to build the client, but there are certainly edge and corner cases I
-haven't dealt with. Pull requests to improve testing are gratefully solicited.
-Any pull requests for new functionality should come with tests.
+haven't dealt with and at least some of the API surface has probably not had
+eyes on it. Pull requests to improve testing are gratefully solicited. **Any
+pull requests for new functionality should come with tests.**
 
 Since this is effectively an integration test, you'll need to set some
 environment variables in order to test against Twitch's API. Specifically, the
@@ -168,11 +172,11 @@ These are automatically sourced when appropriate. See
 `env_test_secrets.bash.example` (n.b.: `env_test_secrets.bash` is ignored via
 `.gitignore`, because obviously).
 
-Tests _must_ be non-mutating. Getters are OK--setters are not. In the future
-we can consider the idea of more in-depth tests; for example, I have the two
-Twitch accounts `tracecomplete` and `tracecomplete_test`, and I wouldn't mind
-running mutating tests against `tracecomplete_test`. If you are interested in
-this, open an issue and we can discuss it.
+Tests _must_ be non-mutating. Getters are OK--setters are not. In the future we
+can consider the idea of more in-depth tests; for example, I have the two Twitch
+accounts `tracecomplete` and `tracecomplete_test`, and I wouldn't mind running
+mutating tests against `tracecomplete_test`. If you are interested in this, open
+an issue and we can discuss it.
 
 ## Future Work ##
 - There are a lot of calls not directly wrapped.

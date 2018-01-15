@@ -40,6 +40,16 @@ describe('games', () => {
     expect(games["8076"].name).toBe("Suikoden");
     expect(games["18207"].name).toBe("Vandal Hearts");
   }, 20000);
+
+  test.only('get box art by id (kraken + image fetch)', async () => {
+    const auth =
+      await (new StaticTokenAuth(process.env.TWITCH_OAUTH_ACCESS_TOKEN, logger)).initialize();
+
+    const session = new Session(auth, logger, {});
+
+    const games = await session.games.getBoxArtById(["8076", "18207"]);
+    console.log(games)
+  }, 20000);
 });
 
 describe('channels', () => {
@@ -69,7 +79,7 @@ describe('channels', () => {
 });
 
 describe('clips', () => {
-  test.only('top clips (kraken token cursor)', async () => {
+  test('top clips (kraken token cursor)', async () => {
     const auth =
       await (new StaticTokenAuth(process.env.TWITCH_OAUTH_ACCESS_TOKEN, logger)).initialize();
 
