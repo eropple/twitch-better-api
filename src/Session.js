@@ -1,0 +1,30 @@
+import * as _ from 'lodash';
+import Joi from 'joi';
+import deepFreeze from 'deep-freeze-es6';
+
+import { CATEGORIES } from './operations';
+import { OPTIONS_VALIDATOR, DEFAULT_OPTIONS } from './options';
+
+export default class Session {
+  constructor(auth, logger, options) {
+    this._auth = auth;
+    this._options = deepFreeze(_.merge({}, DEFAULT_OPTIONS, options));
+
+    this._logger = logger.child({ twitchBetterApi: 'session' });
+    Joi.assert(this._options, OPTIONS_VALIDATOR, "Invalid options provided.");
+
+    this._categories = Object.freeze(CATEGORIES.map((op) => new op(this)));
+
+    this._categories.forEach((cat) => {
+      Object.defineProperty(this, cat.name, {
+        value: cat,
+        writable: false
+      });
+    });
+  }
+
+  get auth() { return this._auth; }
+  get logger() { return this._logger; }
+  get options() { return this._options; }
+  get categories() { return this._categories; }
+}
