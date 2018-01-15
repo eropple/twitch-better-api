@@ -48,12 +48,14 @@ export default class GamesCategory extends OperationCategory {
       const boxArtUrl =
         game.box_art_url.replace("{width}", dimension.width)
                         .replace("{height}", dimension.height);
-      console.log(boxArtUrl)
-      const image = await Axios.get(boxArtUrl, {
-        headers: {
-          "Access-Control-Allow-Origin": ''
-        }
+
+      const imageResp = await Axios.get(boxArtUrl, {
+        // TODO: browser support probably will require some massaging here
+        responseType: 'arraybuffer',
+        maxContentLength: 25 * 1024 * 1024
       });
+
+      const image = imageResp.request.path.includes("404_boxart") ? null : imageResp.data;
 
       return [game.id, image];
     });

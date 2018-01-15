@@ -26,7 +26,7 @@ export default class AppTokenAuth extends BaseAuth {
     await this._acquireToken(options.scopes);
   }
 
-  async _acquireToken(scopes) {
+  async _acquireToken(scopes = []) {
     const p = {
       client_id: this._oauthClientId,
       client_secret: this._oauthClientSecret,

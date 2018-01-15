@@ -11,7 +11,7 @@ import { OPTIONS_VALIDATOR, DEFAULT_OPTIONS } from './options';
 export default class Session {
   constructor(auth, logger, options) {
     this._auth = auth;
-    this._options = deepFreeze(_.merge({}, DEFAULT_OPTIONS, options));
+    this._options = deepFreeze(_.merge({}, options));
 
     this._logger = logger.child({ twitchBetterApi: 'session' });
     Joi.assert(this._options, OPTIONS_VALIDATOR, "Invalid options provided.");
@@ -62,3 +62,6 @@ export default class Session {
     }
   }
 }
+
+Session.build = (auth, logger, options = {}) =>
+  new Session(auth, logger, _.merge({}, DEFAULT_OPTIONS, options));

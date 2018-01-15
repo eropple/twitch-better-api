@@ -1,6 +1,5 @@
 import * as _ from 'lodash';
 import Bunyan from 'bunyan';
-import isInBrowser from 'is-in-browser';
 
 import _Session from './Session';
 import _BaseAuth from './auth/BaseAuth';
@@ -22,8 +21,11 @@ function ensureLogger(logger) {
   return logger;
 }
 
-export async function connectAsApp(oauthClientId, oauthClientSecret, logger, userOptions) {
-  if (isInBrowser) {
+export async function connectAsApp(oauthClientId, oauthClientSecret, logger, userOptions = {}) {
+  // HACK: this is gross, but I can't figure out how to run the related test
+  //       only for node and not also for browser testing. Suggestions welcome.
+  if (typeof(window) !== 'undefined' && typeof(__TEST__) === 'undefined') {
+    console.log(typeof(window))
     throw new Error("connectAsApp flow must not be used in a browser.");
   }
 
@@ -40,10 +42,10 @@ export async function connectWithUserAccessToken(oauthToken, logger, userOptions
   return connect(auth, logger, userOptions);
 }
 
-export async function connect(auth, logger, userOptions) {
+export async function connect(auth, logger, userOptions = {}) {
   logger = ensureLogger(logger);
   logger.info("Initializing Twitch API authentication.");
   await auth.initialize(userOptions);
 
-  return new Session(auth, logger, userOptions);
+  return Session.build(auth, logger, userOptions);
 }

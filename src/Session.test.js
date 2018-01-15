@@ -5,7 +5,7 @@ import StaticTokenAuth from './auth/StaticTokenAuth';
 import Session from './Session';
 
 import KrakenOffsetCursor from './twitch/KrakenOffsetCursor';
-import _KrakenTokenCursor from './twitch/KrakenTokenCursor';
+import KrakenTokenCursor from './twitch/KrakenTokenCursor';
 
 const logger = Bunyan.createLogger({ name: 'twitch-better-api-test' });
 
@@ -41,14 +41,17 @@ describe('games', () => {
     expect(games["18207"].name).toBe("Vandal Hearts");
   }, 20000);
 
-  test.only('get box art by id (kraken + image fetch)', async () => {
+  test('get box art by id (kraken + image fetch)', async () => {
     const auth =
       await (new StaticTokenAuth(process.env.TWITCH_OAUTH_ACCESS_TOKEN, logger)).initialize();
 
     const session = new Session(auth, logger, {});
 
+    // Vandal Hearts (18207) doesn't have box art. THIS TEST MAY BREAK IN THE
+    // FUTURE IF THEY GET BOX ART FOR IT. FIX IT THEN. K. BYE.
     const games = await session.games.getBoxArtById(["8076", "18207"]);
-    console.log(games)
+    expect(games["8076"]).toBeInstanceOf(Buffer);
+    expect(games["18207"]).toBeFalsy();
   }, 20000);
 });
 
@@ -86,6 +89,7 @@ describe('clips', () => {
     const session = new Session(auth, logger, {});
 
     const cursor = session.clips.getTopClipsCursor();
+    expect(cursor).toBeInstanceOf(KrakenTokenCursor);
 
     expect(cursor.data).toBeFalsy();
     let data1 = await cursor.next();
