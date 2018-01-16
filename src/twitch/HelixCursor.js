@@ -16,6 +16,7 @@ export default class HelixCursor extends Cursor {
     }
 
     const params = _.merge({}, this._parameters);
+    params.first = params.first || 25;
 
     if (this._started) {
       // a null offset, after starting, means that we've run out of values.

@@ -2,7 +2,7 @@
   "name": "@eropple/twitch-better-api",
   "version": "0.1.0",
   "main": "dist",
-  "repository": "git@github.com:eropple/twitch-better-api",
+  "repository": "https://github.com/eropple/twitch-better-api",
   "author": "Ed Ropple <ed@edropple.com>",
   "license": "AGPL-3.0",
   "dependencies": {

@@ -10,25 +10,21 @@ export default class UsersCategory extends OperationCategory {
 
   async getUsersById(ids) {
     ids = _.flatten([ids]);
-    return _.keyBy(
-      (await this.helixCall("get", "/users", { params: { id: ids } })).data,
-      "id"
-    )
+    const resp = (await this.helixCall("get", "/users", { params: { id: ids } }));
+    return _.keyBy(resp.data, (u) => u.id)
   }
 
   async getUsersByLogin(logins) {
     logins = _.flatten([logins]);
-    return _.keyBy(
-      (await this.helixCall("get", "/users", { params: { login: logins } })).data,
-      "name"
-    );
+    const resp = (await this.helixCall("get", "/users", { params: { login: logins } }));
+    return _.keyBy(resp.data, (u) => u.login);
   }
 
-  getUserFollowersCursor(followedId) {
-    return this.helix.getCursor("/follows", { to_id: followedId });
+  getUserFollowersCursor(followedId, limit = null) {
+    return this.helix.getCursor("/users/follows", { first: limit, to_id: followedId });
   }
 
-  getUsersFollowedCursor(followerId) {
-    return this.helix.getCursor("/follows", { from_id: followerId });
+  getUsersFollowedCursor(followerId, limit = null) {
+    return this.helix.getCursor("/users/follows", { first: limit, from_id: followerId });
   }
 }
