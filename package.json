@@ -1,111 +1,43 @@
 {
   "name": "@eropple/twitch-better-api",
-  "version": "0.1.0",
+  "version": "0.2.0-rc.1",
   "main": "dist",
   "repository": "https://github.com/eropple/twitch-better-api",
   "author": "Ed Ropple <ed@edropple.com>",
   "license": "AGPL-3.0",
   "dependencies": {
+    "@types/bunyan": "^1.8.4",
+    "@types/joi": "^13.4.0",
+    "@types/lodash": "^4.14.115",
+    "@types/luxon": "^1.2.1",
+    "@types/qs": "^6.5.1",
     "axios": "^0.17.1",
+    "bunyan": "^1.8.12",
+    "change-case": "^3.0.2",
     "deep-freeze-es6": "^1.0.1",
     "eventemitter2": "^5.0.1",
     "joi": "^13.1.0",
     "lodash": "^4.17.4",
+    "luxon": "^1.3.3",
     "qs": "^6.5.1",
     "set-manipulator": "^0.3.1"
   },
-  "engines": {
-    "node": ">= 8.0.0"
-  },
   "scripts": {
-    "console": "babel-node",
-    "lint": "yarn exec eslint src",
-    "test": "yarn lint && . ./env_test_secrets.bash && jest",
-    "build": "babel --copy-files src -d dist",
-    "watch": "babel --watch --copy-files src -d dist",
+    "build": "yarn exec tsc",
     "clean": "rm -rf dist",
-    "precommit": "npm run test",
-    "prepush": "npm run test"
-  },
-  "peerDependencies": {
-    "bunyan": "~1.8"
+    "#precommit": "npm run test",
+    "#prepush": "npm run test",
+    "test": "source ./env_test_secrets.bash && yarn exec jest",
+    "watch": "yarn exec tsc --watch --preserveWatchOutput"
   },
   "devDependencies": {
-    "babel-cli": "^6.0.0",
-    "babel-core": "^6.26.0",
-    "babel-eslint": "^8.2.1",
-    "babel-jest": "^21.0.2",
-    "babel-plugin-transform-class-properties": "^6.24.1",
-    "babel-preset-env": "^1.6.0",
-    "bunyan": "^1.8.12",
-    "eslint": "^4.15.0",
-    "jest": "^22.0.6",
-    "jest-environment-node": "^22.0.6"
-  },
-  "babel": {
-    "presets": [
-      [
-        "env",
-        {
-          "targets": {
-            "node": "8.0.0"
-          }
-        }
-      ]
-    ],
-    "plugins": [
-      [
-        "transform-class-properties",
-        {
-          "spec": true
-        }
-      ]
-    ]
-  },
-  "eslintConfig": {
-    "extends": [],
-    "plugins": [],
-    "parser": "babel-eslint",
-    "parserOptions": {
-      "sourceType": "module",
-      "ecmaFeatures": {
-        "impliedStrict": true
-      }
-    },
-    "env": {
-      "es6": true,
-      "jest": true
-    },
-    "rules": {
-      "arrow-parens": [
-        "error",
-        "always"
-      ],
-      "class-methods-use-this": "off",
-      "comma-dangle": [
-        "error",
-        "never"
-      ],
-      "import/prefer-default-export": "off",
-      "max-len": [
-        "warn",
-        100
-      ],
-      "no-console": "off",
-      "no-else-return": "off",
-      "no-empty-function": "off",
-      "no-underscore-dangle": "off",
-      "no-unused-vars": [
-        "error",
-        {
-          "varsIgnorePattern": "^_",
-          "argsIgnorePattern": "^_"
-        }
-      ],
-      "no-useless-constructor": "off",
-      "space-before-function-paren": "off",
-      "quotes": "off"
-    }
+    "@types/jest": "23.3.0",
+    "husky": "0.14",
+    "jest": "^22.0",
+    "jest-environment-node": "^22.0.6",
+    "ts-jest": "22.4.1",
+    "tslint": "5.9.1",
+    "typescript": "2.8.4"
   },
   "jest": {
     "globals": {
@@ -113,9 +45,18 @@
       "__TEST__": true
     },
     "testEnvironment": "node",
+    "transform": {
+      "^.+\\.tsx?$": "ts-jest"
+    },
     "globalSetup": "./dist/testSetup",
-    "testPathIgnorePatterns": [
-      "<rootDir>/src"
+    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "jsx",
+      "json",
+      "node"
     ]
   }
 }

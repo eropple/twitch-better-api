@@ -1,32 +1,33 @@
+import Bunyan from "bunyan";
 import * as _ from 'lodash';
 import Qs from 'qs';
-import { complement } from 'set-manipulator';
 
-import BaseAuth from './BaseAuth';
+import { BaseAuth } from './BaseAuth';
 import { unauthedKraken } from '../twitch/kraken';
+import { BetterTwitchOptions } from "../options";
 
+const { complement } = require("set-manipulator");
 
-export default class AppTokenAuth extends BaseAuth {
-  constructor(oauthClientId, oauthClientSecret, logger) {
-    super(logger);
-    this._logger = this.logger.child({ type: 'appToken' });
+export class AppTokenAuth extends BaseAuth {
+  private _refreshCanceller: NodeJS.Timer | null = null;
 
-    this._oauthClientId = oauthClientId;
-    this._oauthClientSecret = oauthClientSecret;
-    this._refreshCanceller = null;
-
-    this._acquireToken = this._acquireToken.bind(this);
+  constructor(
+    private readonly _oauthClientId: string,
+    private readonly _oauthClientSecret: string,
+    logger: Bunyan
+  ) {
+    super(logger.child({ type: "appToken "}));
   }
 
-  async doInitialize(options) {
-    await this._acquireToken(options.scopes);
+  async doInitialize(options: BetterTwitchOptions): Promise<string | null> {
+    return this._acquireToken(options.scopes);
   }
 
-  async doRefresh(options) {
-    await this._acquireToken(options.scopes);
+  async doRefresh(options: BetterTwitchOptions): Promise<string | null> {
+    return this._acquireToken(options.scopes);
   }
 
-  async _acquireToken(scopes = []) {
+  private async _acquireToken(scopes: ReadonlyArray<string> = []): Promise<string | null> {
     const p = {
       client_id: this._oauthClientId,
       client_secret: this._oauthClientSecret,
@@ -39,12 +40,10 @@ export default class AppTokenAuth extends BaseAuth {
 
       const askedScopes = new Set(scopes);
       const returnedScopes = new Set(resp.data.scope);
-      const missingScopes = complement(askedScopes, returnedScopes);
+      const missingScopes = complement(askedScopes, returnedScopes) as Array<string>;
       if (missingScopes.length > 0) {
         throw new Error(`Missing scopes in returned token: ${missingScopes.join(" ")}`);
       }
-
-      this._accessToken = resp.data.access_token;
 
       const expiresInSeconds = resp.data.expires_in;
       const timeoutSeconds = (expiresInSeconds - 480);
@@ -58,9 +57,11 @@ export default class AppTokenAuth extends BaseAuth {
 
       this._refreshCanceller = setTimeout(() => {
         this._acquireToken(scopes);
-      })
+      }, 60 * 60 * 1000)
 
       this.logger.info(`Set refresh timeout for ${timeoutSeconds} secs.`);
+      return resp.data.access_token;
+
     } catch (err) {
       this.logger.error(
         { error: _.get(err, ["response", "data"]) },
@@ -68,6 +69,7 @@ export default class AppTokenAuth extends BaseAuth {
       );
 
       this._accessToken = null;
+      return null;
     }
   }
 }

@@ -27,9 +27,8 @@ filed to that effect.
 
 `twitch-better-api` expects, as with any good application, to be used in a
 context where [Bunyan](https://github.com/trentm/node-bunyan) logging is used.
-Bunyan is specified in `peerDependencies`, so you'll be obligated to specify a
-version of Bunyan in your project. If a Bunyan logger is not provided during
-client setup, it will then create its own logger. It will then make fun of you.
+It will create a Bunyan logger if you don't give it one. If you use Winston,
+that's fine, but it's up to you to add a Winston stream to the Bunyan logger.
 
 `twitch-better-api` isn't intended for use in a browser, but can probably be
 made to work in a browser without too much effort.
@@ -139,9 +138,9 @@ If there's a call you need access to that isn't made available, we've got an
 option for that. Two properties exist, `Session.helix` and `Session.kraken`,
 which will yield to you properly authenticated clients for the Helix and the
 `v5` APIs respectively. There are also helper methods, `Session.helixCall` and
-`Session.krakenCall`, that
+`Session.krakenCall`, that make this a little less gross.
 
-Before you do this in your own code, however, please consider writing an
+**Before you do this in your own code**, however, please consider writing an
 operation that presents a nice interface for the problem you're trying to solve;
 somebody else will probably need it someday and it's a good way to contribute
 back.
