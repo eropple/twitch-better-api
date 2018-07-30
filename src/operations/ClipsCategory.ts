@@ -11,7 +11,6 @@ function clipConvert(item: any): KrakenClip {
   const c = transformTwitchResponse<KrakenClip>(item);
   c.broadcaster = transformTwitchResponse<KrakenClipChannel>(c.broadcaster);
   c.curator = transformTwitchResponse<KrakenClipChannel>(c.curator);
-
   return c;
 }
 

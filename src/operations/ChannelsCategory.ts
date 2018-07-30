@@ -32,7 +32,8 @@ export class ChannelsCategory extends OperationCategory {
     const ch: any = this.krakenCall(
       "put",
       `/channels/${id}`,
-      { params: {
+      {
+        params: {
           status,
           game,
           delay,
@@ -111,7 +112,9 @@ export class ChannelsCategory extends OperationCategory {
       "/search/channels",
       ["channels"],
       i => transformTwitchResponse<KrakenChannel>(i),
-      { params: query }
+      {
+        query: query
+      }
     );
   }
 }

@@ -40,27 +40,29 @@ describe('games', () => {
 
 describe('channels', () => {
   test('channel search (kraken offset cursor)', async () => {
-    const auth = new StaticTokenAuth(process.env.TWITCH_OAUTH_ACCESS_TOKEN || "", logger);
+    try {
+      const auth = new StaticTokenAuth(process.env.TWITCH_OAUTH_ACCESS_TOKEN || "", logger);
 
-    const session = new Session(auth, logger, { scopes: [] });
+      const session = new Session(auth, logger, { scopes: [] });
 
-    const cursor = session.channels.searchChannelsCursor("starcraft");
-    expect(cursor).toBeInstanceOf(KrakenOffsetCursor);
+      const cursor = session.channels.searchChannelsCursor("starcraft");
+      expect(cursor).toBeInstanceOf(KrakenOffsetCursor);
 
-    expect(cursor.data).toBeFalsy();
-    let data1 = await cursor.next();
+      expect(cursor.data).toBeFalsy();
+      let data1 = await cursor.next();
 
-    expect(cursor.total).toBeTruthy();
-    expect(cursor.data).toBeTruthy();
+      expect(cursor.total).toBeTruthy();
+      expect(cursor.data).toBeTruthy();
 
-    let data2 = await cursor.next();
-    let data3 = await cursor.next();
+      let data2 = await cursor.next();
+      let data3 = await cursor.next();
 
-    const ids = _.uniq(_.flatten([data1 || [], data2 || [], data3 || []]).map((ch) => ch.id));
-    // This is a bit hacky; it'd be really weird for more than five channels to
-    // shuffle in the time it takes for the cursor to run, so I'm OK with it
-    // until it's proven bad.
-    expect(ids.length).toBeGreaterThan(70);
+      const ids = _.uniq(_.flatten([data1 || [], data2 || [], data3 || []]).map((ch) => ch.id));
+      expect(ids.length).toBeGreaterThan(70);
+    } catch (err) {
+      console.log(err)
+      throw err;
+    }
   }, 20000);
 });
 
@@ -82,9 +84,6 @@ describe('clips', () => {
     let data3 = await cursor.next();
 
     const slugs = _.uniq(_.flatten([data1 || [], data2 || [], data3 || []]).map((ch) => ch.slug));
-    // This is a bit hacky; it'd be really weird for more than five channels to
-    // shuffle in the time it takes for the cursor to run, so I'm OK with it
-    // until it's proven bad.
     expect(slugs.length).toBeGreaterThan(70);
   }, 20000);
 });

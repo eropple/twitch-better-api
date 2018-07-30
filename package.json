@@ -1,6 +1,6 @@
 {
   "name": "@eropple/twitch-better-api",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "main": "dist",
   "repository": "https://github.com/eropple/twitch-better-api",
   "author": "Ed Ropple <ed@edropple.com>",
@@ -22,15 +22,12 @@
     "qs": "^6.5.1",
     "set-manipulator": "^0.3.1"
   },
-  "engines": {
-    "node": ">= 8.0.0"
-  },
   "scripts": {
     "build": "yarn exec tsc",
     "clean": "rm -rf dist",
     "#precommit": "npm run test",
     "#prepush": "npm run test",
-    "test": "source ./env_test_secrets.bash && yarn exec tslint --project . && yarn exec jest",
+    "test": "source ./env_test_secrets.bash && yarn exec jest",
     "watch": "yarn exec tsc --watch --preserveWatchOutput"
   },
   "devDependencies": {

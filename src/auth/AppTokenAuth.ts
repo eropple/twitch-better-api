@@ -57,7 +57,7 @@ export class AppTokenAuth extends BaseAuth {
 
       this._refreshCanceller = setTimeout(() => {
         this._acquireToken(scopes);
-      }, timeoutSeconds * 1000)
+      }, 60 * 60 * 1000)
 
       this.logger.info(`Set refresh timeout for ${timeoutSeconds} secs.`);
       return resp.data.access_token;
@@ -68,6 +68,7 @@ export class AppTokenAuth extends BaseAuth {
         "Error when acquiring token."
       );
 
+      this._accessToken = null;
       return null;
     }
   }

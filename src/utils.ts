@@ -1,10 +1,12 @@
+import * as _ from "lodash";
+
 import * as ChangeCase from "change-case";
 import { DateTime } from "luxon";
 
 export function transformTwitchResponse<T>(obj: { [key: string]: any }) {
   const ret: { [key: string]: any } = {};
 
-  for (const key of Object.keys(ret)) {
+  for (const key of Object.keys(obj)) {
     let fixedKey: string;
 
     if (key === "_id") {

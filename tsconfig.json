@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "allowJs": false,
     "baseUrl": ".",
     "esModuleInterop": true,
     "lib": [
@@ -16,7 +17,8 @@
     "emitDecoratorMetadata": true,
     "rootDir": "src",
     "paths": {
-    }
+    },
+    "watch": true
   },
   "include": [
     "src/**/*.ts",
