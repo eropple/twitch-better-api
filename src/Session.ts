@@ -44,14 +44,13 @@ export class Session {
   get kraken(): AuthedKraken { return authedKraken(this.auth.accessToken); }
   get helix(): AuthedHelix { return authedHelix(this.auth.accessToken); }
 
-  async helixCall(method: string, endpoint: string, options: object | null) {
+  async helixCall<T>(method: string, endpoint: string, options: object | null) {
     const fullOptions = _.merge({}, { method, url: endpoint }, options);
 
     try {
       this.logger.debug({ options: fullOptions });
-      this.helix
-      const resp = await this.helix(_.merge({}, { method, url: endpoint }, options));
-      return resp.data;
+      const resp = await this.helix.request(_.merge({}, { method, url: endpoint }, options));
+      return resp.data as T;
     } catch (err) {
       const {response} = err;
       this.logger.error({ response, options: fullOptions });
@@ -59,13 +58,13 @@ export class Session {
     }
   }
 
-  async krakenCall(method: string, endpoint: string, options: object | null) {
+  async krakenCall<T>(method: string, endpoint: string, options: object | null) {
     const fullOptions = _.merge({}, { method, url: endpoint }, options);
 
     try {
       this.logger.debug({ options: fullOptions });
-      const resp = await this.kraken(_.merge({}, { method, url: endpoint }, options));
-      return resp.data;
+      const resp = await this.kraken.request(_.merge({}, { method, url: endpoint }, options));
+      return resp.data as T;
     } catch (err) {
       const {response} = err;
       this.logger.error({ response, options: fullOptions });

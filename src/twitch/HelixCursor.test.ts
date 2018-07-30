@@ -18,7 +18,7 @@ test('can issue a cursor command', async () => {
   const helix = authedHelix(auth.accessToken);
 
   const parameters = { game_id: "493057" }; // 493057 - PUBG
-  const cursor = helix.getCursor("/streams", parameters);
+  const cursor: any = helix.getCursor("/streams", i => i, parameters);
   expect(cursor).toBeInstanceOf(HelixCursor);
 
   expect(cursor.data).toBeFalsy();

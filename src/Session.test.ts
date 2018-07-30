@@ -36,17 +36,6 @@ describe('games', () => {
     expect(games["8076"].name).toBe("Suikoden");
     expect(games["18207"].name).toBe("Vandal Hearts");
   }, 20000);
-
-  test('get box art by id (kraken + image fetch)', async () => {
-    const auth = new StaticTokenAuth(process.env.TWITCH_OAUTH_ACCESS_TOKEN || "", logger);
-
-    const session = new Session(auth, logger, { scopes: [] });
-    // Vandal Hearts (18207) doesn't have box art. THIS TEST MAY BREAK IN THE
-    // FUTURE IF THEY GET BOX ART FOR IT. FIX IT THEN. K. BYE.
-    const games = await (session as any).games.getBoxArtById(["8076", "18207"]);
-    expect(games["8076"]).toBeInstanceOf(Buffer);
-    expect(games["18207"]).toBeFalsy();
-  }, 20000);
 });
 
 describe('channels', () => {
@@ -60,13 +49,14 @@ describe('channels', () => {
 
     expect(cursor.data).toBeFalsy();
     let data1 = await cursor.next();
+
     expect(cursor.total).toBeTruthy();
     expect(cursor.data).toBeTruthy();
 
     let data2 = await cursor.next();
     let data3 = await cursor.next();
 
-    const ids = _.uniq(_.flatten([data1, data2, data3]).map((ch) => ch._id));
+    const ids = _.uniq(_.flatten([data1 || [], data2 || [], data3 || []]).map((ch) => ch.id));
     // This is a bit hacky; it'd be really weird for more than five channels to
     // shuffle in the time it takes for the cursor to run, so I'm OK with it
     // until it's proven bad.
@@ -80,7 +70,7 @@ describe('clips', () => {
 
     const session = new Session(auth, logger, { scopes: [] });
 
-    const cursor = session.clips.getTopClipsCursor();
+    const cursor = session.clips.getTopClipsCursor({});
     expect(cursor).toBeInstanceOf(KrakenTokenCursor);
 
     expect(cursor.data).toBeFalsy();
@@ -91,7 +81,7 @@ describe('clips', () => {
     let data2 = await cursor.next();
     let data3 = await cursor.next();
 
-    const slugs = _.uniq(_.flatten([data1, data2, data3]).map((ch) => ch.slug));
+    const slugs = _.uniq(_.flatten([data1 || [], data2 || [], data3 || []]).map((ch) => ch.slug));
     // This is a bit hacky; it'd be really weird for more than five channels to
     // shuffle in the time it takes for the cursor to run, so I'm OK with it
     // until it's proven bad.

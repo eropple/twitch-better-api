@@ -6,8 +6,19 @@ import { KrakenTokenCursor } from './KrakenTokenCursor';
 export type UnauthedKraken = AxiosInstance;
 export type AuthedKraken =
   AxiosInstance & {
-    getOffsetCursor(endpoint: string, digPath: ReadonlyArray<string>, parameters?: object): KrakenOffsetCursor;
-    getTokenCursor(endpoint: string, digPath: ReadonlyArray<string>, parameters?: object): KrakenTokenCursor;
+    getOffsetCursor<TReturnType>(
+      endpoint: string,
+      digPath: ReadonlyArray<string>,
+      transformFunction: (item: any) => TReturnType,
+      parameters?: object
+    ): KrakenOffsetCursor<TReturnType>;
+
+    getTokenCursor<TReturnType>(
+      endpoint: string,
+      digPath: ReadonlyArray<string>,
+      transformFunction: (item: any) => TReturnType,
+      parameters?: object
+    ): KrakenTokenCursor<TReturnType>;
   }
 
 export const unauthedKraken: UnauthedKraken =
@@ -27,10 +38,20 @@ export function authedKraken(oauthToken: string): AuthedKraken {
     }
   }) as any;
 
-  ret.getOffsetCursor = (endpoint: string, digPath: ReadonlyArray<string>, parameters?: object) =>
-    new KrakenOffsetCursor(ret, endpoint, digPath, parameters || {});
-  ret.getTokenCursor = (endpoint: string, digPath: ReadonlyArray<string>, parameters?: object) =>
-    new KrakenTokenCursor(ret, endpoint, digPath, parameters || {});
+  ret.getOffsetCursor =
+    <TReturnType>(
+      endpoint: string,
+      digPath: ReadonlyArray<string>,
+      transformFunction: (item: any) => TReturnType,
+      parameters?: object
+    ) => new KrakenOffsetCursor<TReturnType>(ret, endpoint, digPath, transformFunction, parameters || {});
+  ret.getTokenCursor =
+    <TReturnType>(
+      endpoint: string,
+      digPath: ReadonlyArray<string>,
+      transformFunction: (item: any) => TReturnType,
+      parameters?: object
+    ) => new KrakenTokenCursor<TReturnType>(ret, endpoint, digPath, transformFunction, parameters || {});
 
   return ret;
 };

@@ -5,7 +5,13 @@ import { HelixCursor } from './HelixCursor';
 
 export type UnauthedHelix = AxiosInstance;
 export type AuthedHelix =
-  AxiosInstance & { getCursor(endpoint: string, parameters: object): HelixCursor };
+  AxiosInstance & {
+    getCursor<TReturnType>(
+      endpoint: string,
+      transformFunction: (item: any) => TReturnType,
+      parameters: object
+    ): HelixCursor<TReturnType>
+  };
 
 export const unauthedHelix: UnauthedHelix =
   Axios.create({
@@ -28,7 +34,9 @@ export function authedHelix(oauthToken: string): AuthedHelix {
     }
   });
 
-  ret.getCursor = (endpoint: string, parameters: object) => new HelixCursor(ret, endpoint, parameters);
+  ret.getCursor =
+    <TReturnType>(endpoint: string, transformFunction: (item: any) => TReturnType, parameters: object) =>
+      new HelixCursor<TReturnType>(ret, endpoint, transformFunction, parameters);
 
   return ret;
 };

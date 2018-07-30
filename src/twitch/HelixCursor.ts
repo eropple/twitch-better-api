@@ -3,18 +3,19 @@ import * as _ from 'lodash';
 import { Cursor } from './Cursor';
 import { AuthedHelix } from './helix';
 
-export class HelixCursor extends Cursor {
+export class HelixCursor<TReturnType> extends Cursor<TReturnType> {
   private _cursor: string | null = null;
 
   constructor(
     protected readonly _helix: AuthedHelix,
     endpoint: string,
+    transformFunction: (item: any) => TReturnType,
     parameters: object
   ) {
-    super(endpoint, parameters);
+    super(endpoint, transformFunction, parameters);
   }
 
-  async next() {
+  async next(): Promise<Array<TReturnType> | null> {
     if (this._error) {
       throw this._error;
     }
@@ -38,7 +39,7 @@ export class HelixCursor extends Cursor {
       const {data} = resp;
 
       this._total = data.total;
-      this._data = data.data || [];
+      this._data = (data.data || []).map((item: any) => this._transformFunction(item));
       // HACK: still not typesafe
       if (this._data!.length === 0) {
         this._cursor = null;

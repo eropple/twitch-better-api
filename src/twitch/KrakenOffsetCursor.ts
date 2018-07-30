@@ -3,19 +3,20 @@ import * as _ from 'lodash';
 import { Cursor } from './Cursor';
 import { AuthedKraken } from './kraken';
 
-export class KrakenOffsetCursor extends Cursor {
+export class KrakenOffsetCursor<TReturnType> extends Cursor<TReturnType> {
   private _offset: number | null = null;
 
   constructor(
     protected readonly _kraken: AuthedKraken,
     endpoint: string,
     protected readonly _digPath: ReadonlyArray<string>,
+    transformFunction: (item: any) => TReturnType,
     parameters: object
   ) {
-    super(endpoint, _.merge({}, { limit: 25 }, parameters));
+    super(endpoint, transformFunction, _.merge({}, { limit: 25 }, parameters));
   }
 
-  async next() {
+  async next(): Promise<Array<TReturnType> | null> {
     if (this._error) {
       throw this._error;
     }
@@ -43,7 +44,7 @@ export class KrakenOffsetCursor extends Cursor {
         this._total = data._total;
       }
 
-      this._data = _.get(data, this._digPath) || [];
+      this._data = (_.get(data, this._digPath) || []).map((item: any) => this._transformFunction(item));
       // HACK: this is not really typesafe
       if (this._data!.length === 0) {
         this._offset = null;
