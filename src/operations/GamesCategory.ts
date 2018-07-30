@@ -2,12 +2,16 @@ import * as _ from 'lodash';
 import Joi from 'joi';
 import Axios from 'axios';
 
-import OperationCategory from './OperationCategory';
+import { OperationCategory } from './OperationCategory';
+import { Session } from '../Session';
+import { BoxArtDimensions } from '../types';
 
 export default class GamesCategory extends OperationCategory {
-  static categoryName = "games";
+  constructor(session: Session) {
+    super("games", session);
+  }
 
-  async getGamesById(ids) {
+  async getGamesById(ids: Array<string>) {
     ids = _.flatten([ids]);
 
     const params = { id: ids };
@@ -17,7 +21,7 @@ export default class GamesCategory extends OperationCategory {
     );
   }
 
-  async getGamesByName(names) {
+  async getGamesByName(names: Array<string>) {
     names = _.flatten([names]);
 
     const params = { name: names };
@@ -31,14 +35,17 @@ export default class GamesCategory extends OperationCategory {
     return this.helix.getCursor("/games/top");
   }
 
-  async getBoxArtById(ids, dimension = { height: 800 }) {
-    Joi.assert(dimension, GamesCategory.GET_BOX_ART_BY_ID_VALIDATOR,
-               "This call only takes a width OR a height (the other is calculated).");
+  async getBoxArtById(ids: Array<string>, dimension: BoxArtDimensions = { height: 800 }) {
+    Joi.assert(
+      dimension,
+      GET_BOX_ART_BY_ID_VALIDATOR,
+      "This call only takes a width OR a height (the other is calculated)."
+    );
 
     if (dimension.width) {
       dimension.height = Math.ceil(dimension.width * (1 + 1/3));
     } else {
-      dimension.width = Math.ceil(dimension.height * 0.75);
+      dimension.width = Math.ceil(dimension.height! * 0.75);
     }
 
     ids = _.flatten([ids]);
@@ -63,13 +70,13 @@ export default class GamesCategory extends OperationCategory {
     return _.fromPairs(await Promise.all(promises));
   }
 
-  async searchGames(query, live = false) {
+  async searchGames(query: string, live: boolean = false) {
     const params = { query, live };
-    return (await this.krakenCall("get", "/search/games", { params })).games;
+    return (await this.krakenCall("get", `/search/games?query=${encodeURIComponent(query)}`, { params })).games;
   }
 }
 
-GamesCategory.GET_BOX_ART_BY_ID_VALIDATOR =
+const GET_BOX_ART_BY_ID_VALIDATOR =
   Joi.object().keys({
     width: Joi.number().integer(),
     height: Joi.number().integer()

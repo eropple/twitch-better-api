@@ -1,14 +1,18 @@
 import * as _ from 'lodash';
 
-import Cursor from './Cursor';
+import { Cursor } from './Cursor';
+import { AuthedKraken } from './kraken';
 
-export default class KrakenOffsetCursor extends Cursor {
-  constructor(kraken, endpoint, digPath, parameters) {
+export class KrakenOffsetCursor extends Cursor {
+  private _offset: number | null = null;
+
+  constructor(
+    protected readonly _kraken: AuthedKraken,
+    endpoint: string,
+    protected readonly _digPath: ReadonlyArray<string>,
+    parameters: object
+  ) {
     super(endpoint, _.merge({}, { limit: 25 }, parameters));
-    this._kraken = kraken;
-    this._digPath = digPath;
-
-    this._offset = null;
   }
 
   async next() {
@@ -16,7 +20,7 @@ export default class KrakenOffsetCursor extends Cursor {
       throw this._error;
     }
 
-    const params = _.merge({}, this._parameters);
+    const params: any = _.merge({}, this._parameters);
 
     if (this._started) {
       // a null offset, after starting, means that we've run out of values.
@@ -40,7 +44,8 @@ export default class KrakenOffsetCursor extends Cursor {
       }
 
       this._data = _.get(data, this._digPath) || [];
-      if (this._data.length === 0) {
+      // HACK: this is not really typesafe
+      if (this._data!.length === 0) {
         this._offset = null;
       }
 

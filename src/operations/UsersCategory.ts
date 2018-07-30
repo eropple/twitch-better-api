@@ -1,8 +1,12 @@
 import * as _ from 'lodash';
-import OperationCategory from './OperationCategory';
 
-export default class UsersCategory extends OperationCategory {
-  static categoryName = "users";
+import { OperationCategory } from './OperationCategory';
+import { Session } from '../Session';
+
+export class UsersCategory extends OperationCategory {
+  constructor(session: Session) {
+    super("users", session);
+  }
 
   async getCurrentUser() {
     return (await this.helixCall("get", "/users")).data[0];

@@ -1,14 +1,18 @@
 import * as _ from 'lodash';
 
-import Cursor from './Cursor';
+import { Cursor } from './Cursor';
+import { AuthedKraken } from './kraken';
 
-export default class KrakenTokenCursor extends Cursor {
-  constructor(kraken, endpoint, digPath, parameters) {
-    super(endpoint, { limit: 25 }, parameters);
-    this._kraken = kraken;
-    this._digPath = digPath;
+export class KrakenTokenCursor extends Cursor {
+  protected _cursor: string | null = null;
 
-    this._cursor = null;
+  constructor(
+    protected readonly _kraken: AuthedKraken,
+    endpoint: string,
+    protected readonly _digPath: ReadonlyArray<string>,
+    parameters: object
+  ) {
+    super(endpoint, _.merge({}, { limit: 25 }, parameters));
   }
 
   async next() {
@@ -16,7 +20,7 @@ export default class KrakenTokenCursor extends Cursor {
       throw this._error;
     }
 
-    const params = _.merge({}, this._parameters);
+    const params: any = _.merge({}, this._parameters);
 
     if (this._started) {
       // a null offset, after starting, means that we've run out of values.

@@ -1,8 +1,12 @@
 import * as _ from 'lodash';
-import OperationCategory from './OperationCategory';
 
-export default class VideosCategory extends OperationCategory {
-  static categoryName = "videos";
+import { OperationCategory } from './OperationCategory';
+import { Session } from '../Session';
+
+export class VideosCategory extends OperationCategory {
+  constructor(session: Session) {
+    super("videos", session);
+  }
 
   async getVideosById(ids) {
     ids = _.flatten([ids]);
