@@ -25,8 +25,8 @@
   "scripts": {
     "build": "tsc",
     "clean": "rm -rf dist",
-    "precommit": "npm run test",
-    "prepush": "npm run test",
+    "#precommit": "npm run test",
+    "#prepush": "npm run test",
     "test": "tslint --project . && jest",
     "watch": "tsc --watch --preserveWatchOutput"
   },
