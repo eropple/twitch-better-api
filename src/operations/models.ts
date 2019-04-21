@@ -179,7 +179,9 @@ export interface HelixUser {
 
 export interface HelixFollow {
   fromId: string;
+  fromName: string;
   toId: string;
+  toName: string;
   followedAt: DateTime;
 }
 

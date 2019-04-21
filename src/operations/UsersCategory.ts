@@ -41,7 +41,8 @@ export class UsersCategory extends OperationCategory {
   getUsersFollowedCursor(followerId: string, limit: number | null = null) {
     return this.helix.getCursor(
       "/users/follows",
-      i => transformTwitchResponse<HelixFollow>(i),{ first: limit, from_id: followerId }
+      i => transformTwitchResponse<HelixFollow>(i),
+      { first: limit, from_id: followerId }
     );
   }
 }

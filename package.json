@@ -1,6 +1,6 @@
 {
   "name": "@eropple/twitch-better-api",
-  "version": "0.3.0-rc.1",
+  "version": "0.3.0-rc.2",
   "main": "dist",
   "repository": "https://github.com/eropple/twitch-better-api",
   "author": "Ed Ropple <ed@edropple.com>",
