@@ -18,6 +18,10 @@ number of other pains in our collective ass.
 So, fine. Let's make a Twitch client that doesn't suck. I think this is a good
 start.
 
+## Changelog ##
+- `0.3.0-rc.1`: updated TypeScript to 3.4.4 and rebuilt with declarations
+  enabled in `tsconfig.json` (whoops).
+
 ## Requirements ##
 `twitch-better-api` is designed for use with Node. I don't use older versions of
 Node, so I've specified a minimum version of `8.0.0`; this may migrate upward
