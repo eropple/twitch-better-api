@@ -154,6 +154,7 @@ export interface KrakenGameSearchResult {
 export interface HelixStream {
   id: string;
   userId: string;
+  userName: string;
   gameId: string;
   communityIds: Array<string>;
   type: string;
